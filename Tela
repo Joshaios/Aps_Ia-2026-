@@ -1,0 +1,58 @@
+import tkinter as tk
+
+
+
+def analisar():
+    link = entrada.get()
+    print("Link informado",link)
+
+PLACEHOLDER = "Digite o link da notícia:"
+
+def apagar_texto(event):
+    if entrada.get() == PLACEHOLDER:
+        entrada.delete(0, tk.END)
+
+
+def colocar_texto(event):
+    if entrada.get() == "":
+        entrada.insert(0, PLACEHOLDER)
+
+
+
+
+
+
+
+janela = tk.Tk()
+janela.title("")
+largura = 400
+altura = 600
+
+largura_tela = janela.winfo_screenwidth()
+altura_tela = janela.winfo_screenheight()
+
+x = (largura_tela - largura) // 2
+y = (altura_tela - altura) // 2
+
+janela.geometry(f"{largura}x{altura}+{x}+{y}")
+janela.config(bg="#45484A")
+
+
+
+
+
+
+
+
+
+entrada = tk.Entry(janela)
+entrada.insert(0, PLACEHOLDER)
+entrada.place(width=310, height=30 , x=15, y=555)
+
+botao = tk.Button(janela, text="Analisar", command=analisar)
+botao.place(width=50, height= 30, x=335, y=555)
+
+entrada.bind("<FocusIn>", apagar_texto)
+entrada.bind("<FocusOut>", colocar_texto)
+
+janela.mainloop()
