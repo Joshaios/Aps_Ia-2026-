@@ -1,44 +1,36 @@
 import tkinter as tk
 from tkinter.constants import DISABLED
 
-PLACEHOLDER = "Digite o link da notícia:"
-Voce="Você"
-def analisar():
-    link = entrada.get()
+PLACEHOLDER = "Digite o link da notícia:" # 10/08/2026 Variável global
 
-    # Previne que o seu placeholder ou vazios virem texto oficial
-    if link == PLACEHOLDER or not link.strip():
+def analisar():
+    link = entrada.get() # 10/08/2026 pega o que foi colocado na caixa de texto "entrada"
+
+    if link == PLACEHOLDER or not link.strip(): # 10/08/2026 Caso o esteja escrito na caixa de texto entrada seja o que está escrito no Placeholder ou nada escrito não serão enviadas para o tk.text "chat"
         return
 
-    # Destranca o widget, insere o texto e tranca de novo
+    #10/08/2026 Faz com que o tk.text "chat" seja editável e seja possível colocar texto dentro e tenha o cor das letras branco
     chat.config(state=tk.NORMAL, fg="#ffffff")
-    # Insere o "Você:" aplicando a formatação visual da tag
+    #10/08/2026 Aqui insere o texto "Você:" acompanhado das características definidas na tag na linha 56
     chat.insert(tk.END, "Você: ", "tag_voce")
 
-    # Insere o resto da mensagem e a quebra de linha sem formatação extra (usa o padrão branco)
-    chat.insert(tk.END, f"{link}\n\n")
+    #10/08/2026 Insere o texto junto com o Você: porém seguindo a característica de texto seguidoo na linha 13 (vulgo Branco)
+    chat.insert(tk.END, f"{link}\n")
 
-    # Força a interface a rolar para a última linha inserida
+    #10/08/2026 Força a interface a rolar para a última linha inserida
     chat.see(tk.END)
     chat.config(state=tk.DISABLED)
 
-    entrada.delete(0, tk.END)
-    janela.focus_set()
-    print("Link informado:", link)
-
-    # Atualiza a Label com propriedades de formatação de texto em bloco
-
-    # Limpa a entrada e força a devolução do foco para a raiz (disparando o FocusOut)
-    entrada.delete(0, tk.END)
-    janela.focus_set()
+    entrada.delete(0, tk.END) #10/08/2026 Retira tudo escrito na caixa de texto "entrada"
+    janela.focus_set()  #10/08/2026 Faz o foco ser voltado para a janela criada
 
 
-def apagar_texto(event):
+def apagar_texto(event): #10/08/2026 função responsável por apagar o texto caso seja igual à variável PlaceHolder lá na linha 4
     if entrada.get() == PLACEHOLDER:
-        entrada.delete(0, tk.END)
+        entrada.delete(0, tk.END) #10/08/2026 Deleta o que está na caixa de texto
 
 
-def colocar_texto(event):
+def colocar_texto(event): #10/08/2026 função responsável por colocar o texto na variável caso a caixa de texto esteja vazia
     if entrada.get() == "":
         entrada.insert(0, PLACEHOLDER)
 
@@ -50,13 +42,13 @@ largura = 400
 altura = 600
 
 # Cálculo de geometria vetorial para centralização de janela
-largura_tela = janela.winfo_screenwidth()
-altura_tela = janela.winfo_screenheight()
-x = (largura_tela - largura) // 2
-y = (altura_tela - altura) // 2
+largura_tela = janela.winfo_screenwidth() #Pega a largura da tela
+altura_tela = janela.winfo_screenheight() # Pega a altura da tela
+x = (largura_tela - largura) // 2 # Responsável por pegar a largura da tela subtrair com a largura da janela e dividir por 2 para centralizar o eixo X
+y = (altura_tela - altura) // 2 # Responsável por pegar a altura da tela subtrair com a altura da janela e dividir por 2 para centralizar o eixo Y
 
-janela.geometry(f"{largura}x{altura}+{x}+{y}")
-janela.config(bg="#45484A")
+janela.geometry(f"{largura}x{altura}+{x}+{y}") # Responsável pela largura e altura da janela e também responsável pelo eixo x e y da posição do mesmo
+janela.config(bg="#45484A") #Responsável pela cor de fundo
 
 # Área de exibição (agora com texto alinhado no topo esquerdo)
 chat = tk.Text(janela, font=("Arial", 10), fg="#ffffff", cursor="arrow")
@@ -69,7 +61,7 @@ chat.config(bg="#7a7a7a", state=DISABLED)
 entrada = tk.Entry(janela)
 entrada.insert(0, PLACEHOLDER)
 entrada.place(width=310, height=30, x=15, y=555)
-entrada.config(bg="#7a7a7a", fg="#ffff00")
+entrada.config(bg="#7a7a7a", fg="#CCFF00")
 
 # Botão de disparo de evento
 botao = tk.Button(janela, text="Analisar", command=analisar)
@@ -77,10 +69,10 @@ botao.place(width=50, height=30, x=335, y=555)
 botao.config(bg="#7a7a7a")
 
 # Bindings de controle de estado (foco)
-entrada.bind("<FocusIn>", apagar_texto)
-entrada.bind("<FocusOut>", colocar_texto)
+entrada.bind("<FocusIn>", apagar_texto) #10/08/2026 Quando o focar na caixa de texto "entrada" vai chamar a def "apagar_texto" da linha 28
+entrada.bind("<FocusOut>", colocar_texto) #10/08/2026 Quando o foco sair da caixa de texto "entrada" vai chamar a def "colocar_texto" da linha 33
+entrada.bind("<Return>", lambda event: analisar()) # 11/08/2026 Faz o botão Enter quando apertado ter a funcionalidade da DEF "Analisar" na linha 6
 
-# Interceptação global de eventos do mouse para gerência de foco forçado
-janela.bind("<Button-1>", lambda event: event.widget.focus_set())
+janela.bind("<Button-1>", lambda event: event.widget.focus_set()) # 10/08/2026 Faz com que o clique esquerdo do mouse transfira o foco dele para o local de onde o cursor está em cima
 
 janela.mainloop()
