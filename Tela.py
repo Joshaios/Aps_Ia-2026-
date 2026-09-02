@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter.constants import DISABLED
-from newspaper import Article
+from Motor_IA import analisar_link
 
 PLACEHOLDER = "Digite o link da notícia:" # 10/08/2026 Variável global
 
@@ -11,39 +11,32 @@ def analisar(event=None):
     if link == PLACEHOLDER or not link.strip():
         return
 
-    # --- ATUALIZAÇÃO DA INTERFACE (MENSAGEM DO USUÁRIO) --- 12/08/2026
+    # --- ATUALIZAÇÃO DA INTERFACE (MENSAGEM DO USUÁRIO) ---
     chat.config(state=tk.NORMAL)
     chat.insert(tk.END, "Você: ", "tag_voce")
     chat.insert(tk.END, f"{link}\n\n")
+
+    # Informa que está processando
+    chat.insert(tk.END, "Bot: ", "tag_bot")
+    chat.insert(tk.END, "Analisando notícia...\n\n")
+
     chat.see(tk.END)
     chat.update()  # Força a interface a atualizar antes de congelar no download
 
-    # --- DECLARAÇÃO DA FUNÇÃO DE EXTRAÇÃO --- 12/08/2026
-    def extrair_texto_noticia(url_alvo):
-        try:
-            if not url_alvo.startswith("http"):
-                url_alvo = "https://" + url_alvo
+    resultado = analisar_link(link)
 
-            artigo = Article(url_alvo, language='pt')
-            artigo.download()
-            artigo.parse()
-
-            return artigo.title
-        except Exception as erro:
-            return f"Erro na extração: {erro}"
-
-    # --- EXECUÇÃO E RETORNO PARA A INTERFACE --- 12/08/2026
-    # Invocamos a função e guardamos o título extraído
-    titulo_extraido = extrair_texto_noticia(link)
-
-    # Injetamos a resposta do "Bot" no histórico
+    # Mostra a resposta
     chat.insert(tk.END, "Bot: ", "tag_bot")
-    chat.insert(tk.END, f"Título lido: {titulo_extraido}\n\n")
+    chat.insert(tk.END, f"{resultado}\n\n")
 
     chat.see(tk.END)
+
+    # Bloqueia novamente o chat
     chat.config(state=tk.DISABLED)
 
+    # Limpa o campo
     entrada.delete(0, tk.END)
+
     janela.focus_set()
 
 
@@ -70,6 +63,7 @@ x = (largura_tela - largura) // 2 # Responsável por pegar a largura da tela sub
 y = (altura_tela - altura) // 2 # Responsável por pegar a altura da tela subtrair com a altura da janela e dividir por 2 para centralizar o eixo Y
 
 janela.geometry(f"{largura}x{altura}+{x}+{y}") # Responsável pela largura e altura da janela e também responsável pelo eixo x e y da posição do mesmo
+janela.resizable(False, False) # 02/09/2026 impede de que a lateral e a altura sejam alteradas
 janela.config(bg="#45484A") #Responsável pela cor de fundo
 
 # Área de exibição (agora com texto alinhado no topo esquerdo)
